@@ -5,12 +5,12 @@ use d_chat;
 
 drop table if exists hx_user;
 create table hx_user(
-	U_Id int(11) not null auto_increment,
-	`U_Type` int(11) DEFAULT NULL,
-	 `U_UserName` varchar(64) DEFAULT NULL,
-	 `U_PassWord` varchar(64) DEFAULT NULL,
-	`U_Agent` int(11) DEFAULT NULL,
-	primary key(U_Id)
+	u_id int(11) not null auto_increment,
+	`u_type` int(11) DEFAULT NULL,
+	 `u_username` varchar(64) DEFAULT NULL,
+	 `u_password` varchar(64) DEFAULT NULL,
+	`u_agent` int(11) DEFAULT NULL,
+	primary key(u_id)
 )engine=InnoDB default charset=utf8;
 insert into hx_user values(null,1,'sam','332532dcfaa1cbf61e2a266bd723612c',0);
 insert into hx_user values(null,1,'luke','202cb962ac59075b964b07152d234b70',1);
