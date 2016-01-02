@@ -12,12 +12,13 @@ create table hx_user(
 	`u_agent` int(11) DEFAULT NULL,
 	primary key(u_id)
 )engine=InnoDB default charset=utf8;
-insert into hx_user values(null,1,'sam','332532dcfaa1cbf61e2a266bd723612c',0);
-insert into hx_user values(null,1,'luke','202cb962ac59075b964b07152d234b70',1);
-insert into hx_user values(null,1,'peter','202cb962ac59075b964b07152d234b70',1);
-insert into hx_user values(null,1,'alex','202cb962ac59075b964b07152d234b70',1);
-insert into hx_user values(null,1,'tony','202cb962ac59075b964b07152d234b70',1);
-insert into hx_user values(null,1,'jack','202cb962ac59075b964b07152d234b70',1);
+insert into hx_user values(1,1,'boss','202cb962ac59075b964b07152d234b70',0);
+insert into hx_user values(2,1,'sam','332532dcfaa1cbf61e2a266bd723612c',1);
+insert into hx_user values(3,1,'luke','202cb962ac59075b964b07152d234b70',2);
+insert into hx_user values(4,1,'peter','202cb962ac59075b964b07152d234b70',2);
+insert into hx_user values(5,1,'alex','202cb962ac59075b964b07152d234b70',2);
+insert into hx_user values(6,1,'tony','202cb962ac59075b964b07152d234b70',2);
+insert into hx_user values(7,1,'jack','202cb962ac59075b964b07152d234b70',2);
 
 drop table if exists hx_message;
 create table hx_message(
