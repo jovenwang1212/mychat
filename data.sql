@@ -1,7 +1,7 @@
-drop database if exists d_customer_service;
-create database d_customer_service;
+drop database if exists d_chat;
+create database d_chat;
 
-use d_customer_service;
+use d_chat;
 
 drop table if exists hx_user;
 create table hx_user(

@@ -14,10 +14,10 @@ class DB {
 
 	function __construct(){
 		$config = Config::get('database');
-		
 		$this->pre = $config['db_pre'];
 
 		if(!$config['db_host'] || !$config['db_name'] || !$config['db_user']) {
+			
             throw new \Exception("请先设置数据库连接参数");  		
 		}
 

@@ -10,9 +10,9 @@
 
 return array(
 	    'db_host' =>  '127.0.0.1',
-	    'db_name'=>  'd_customer_service',
+	    'db_name'=>  'd_chat',
 	    'db_user'=>  'root',
-	    'db_pwd'=>  'root',
+	    'db_pwd'=>  '123456',
 	    'db_port' =>  '3306',
 	    'db_pre'=>""
 	);
