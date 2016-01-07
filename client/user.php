@@ -98,6 +98,12 @@
 			ws = new WebSocket("ws://localhost:9501");
 			ws.onopen = function(e) {
 				console.log("websocket open");
+				var msg = [
+					'login', {
+						'username': name,
+					}
+				];
+				ws.send(JSON.stringify(msg));
 			}
 			ws.onmessage = function(e) {
 				console.log(e.data);
@@ -109,7 +115,7 @@
 				chat_historyDom.appendChild(pDom);
 			}
 			ws.onclose = function(e) {
-				console.log("exit");
+				alert("服务器断开.");
 			};
 			ws.onerror = function(e) {
 				console.log("onerror");

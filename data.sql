@@ -10,7 +10,7 @@ create table hx_user(
 	 `u_username` varchar(64) DEFAULT NULL,
 	 `u_password` varchar(64) DEFAULT NULL,
 	`u_agent` int(11) DEFAULT NULL,
-	status tinyint(1) unsigned NOT NULL DEFAULT '0', 
+	fd int(11) NOT NULL DEFAULT '0', 
 	primary key(u_id)
 )engine=InnoDB default charset=utf8;
 insert into hx_user values(1,1,'boss','202cb962ac59075b964b07152d234b70',0,0);

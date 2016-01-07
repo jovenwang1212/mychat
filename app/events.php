@@ -6,29 +6,15 @@ $app->on('connect', function ($context) use ($app) {
 
 $app->on('login', function ($context) use ($app) {
 	extract($context);
-
-	if ($message->username == $message->password) {
-		$friends=$app->users->login($fd, $message->username);
-
-		// 返回登录成功消息
-		reply($server, $fd, 'login', [ 'friends' => $friends ]);
-
-	} else {
-		reply($server, $fd, 'login', [ 'errors' => [ '用户名和密码不正确。' ] ]);
-	}
+	echo "$fd ".$message->username;
+	$app->users->login($fd, $message->username);
 });
 
 $app->on('close', function ($context) use ($app) {
 	extract($context);
 
 	$user = $app->users->logout($fd);
-	if ($user) {
-		// 广播离开聊天室通知
-		broadcast($server, 'leave', [
-			'fd' => $fd,
-			'username' => $user['username'],
-		], $fd);
-	}
+	
 });
 
 $app->on('list', [

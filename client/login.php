@@ -19,9 +19,6 @@ try {
 		$user = array("uid" => $rst["u_id"], "username" => $rst["u_username"], "agent" => $rst["u_agent"]);
 		$_SESSION['user']=$user;
 		
-		$status_sql="update hx_user set status=1 where u_id=".$rst["u_id"];
-		$status_rst=$db->query($status_sql);
-		var_dump($status_rst);
 		$query = http_build_query($user);
 		header("Location:user.php" . "?" . $query);
 	} else {

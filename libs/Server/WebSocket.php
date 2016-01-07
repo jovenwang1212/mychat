@@ -11,7 +11,6 @@ class WebSocket extends Server
 		$server = new swoole_websocket_server("0.0.0.0", $port);
 
 		$server->on('open', function (swoole_websocket_server $server, $request) {
-		    $this->app->emit('open', compact('server', 'request'));
 		});
 
 		$server->on('message', function (swoole_websocket_server $server, $frame) {
