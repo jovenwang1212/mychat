@@ -47,12 +47,24 @@
 			<h2>好友</h2>
 			<ul id="friends">
 				<?php
-						session_start();
-						$friends=$_SESSION["friends"];
+					require '../vendor/autoload.php';
+					try {
+						$db = new core\DB;
+						$sql_upper="select * from hx_user where u_id=".$_GET['agent'];
+						$sql_down="select * from hx_user where u_agent=".$_GET['uid'];
+						$friend_upper=$db->fetch_first($sql_upper);
+						$friends=$db->fetch_all($sql_down);
+						if($friend_upper){
+							$friends[]=$friend_upper;
+						}
+						$friends=array_reverse($friends);
 						foreach($friends as $friend){
 							echo "<li><a href='#'>".$friend['u_username']."</a></li>";
 						}
-					?>
+					} catch(Exception $e) {
+						var_dump($e);
+					}
+				?>
 			</ul>
 		</div>
 
