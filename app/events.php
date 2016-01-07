@@ -32,7 +32,6 @@ $app->on('close', function ($context) use ($app) {
 });
 
 $app->on('list', [
-	App\Middlewares\Auth::class, 
 	function ($context) use ($app) {
 		extract($context);
 
@@ -41,25 +40,14 @@ $app->on('list', [
 ]);
 
 $app->on('chat', [
-	App\Middlewares\Auth::class, 
 	function ($context) use ($app) {
 		extract($context);
-	
-		if (property_exists($message, 'to_name')) {
-			// 私人聊天
-			whisper($server, $message->content, $fd,$message->to_name);
-		} else if (property_exists($message, 'to_channel')) {
-			// 频道聊天
-			mass($server, $message->content, $fd, $message->to_channel);
-		} else {
-			// 公共聊天
-			mass($server, $message->content, $fd);
-		}
+	whisper($server, $message->content, $fd,$message->to_name);
+		
 	}
 ]);
 
 $app->on('messages', [
-	App\Middlewares\Auth::class, 
 	function ($context) use ($app) {
 		extract($context);
 	

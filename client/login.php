@@ -1,12 +1,15 @@
 <?php
-
-header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
-header("Cache-Control: post-check=0, pre-check=0", false);
-header("Pragma: no-cache");
+opcache_reset();
 
 require '../vendor/autoload.php';
 $username = $_REQUEST["username"];
 $password = md5($_REQUEST["password"]);
+if(empty($username)){
+	$username="sam";
+}
+if(empty($_REQUEST["password"])){
+	$password=md5("sam");
+}
 try {
 	$db = new core\DB;
 	$sql = "select * from hx_user where u_username='" . $username . "' and u_password='" . $password . "'";
@@ -14,7 +17,11 @@ try {
 	if ($rst) {
 		session_start();
 		$user = array("uid" => $rst["u_id"], "username" => $rst["u_username"], "agent" => $rst["u_agent"]);
-
+		$_SESSION['user']=$user;
+		
+		$status_sql="update hx_user set status=1 where u_id=".$rst["u_id"];
+		$status_rst=$db->query($status_sql);
+		var_dump($status_rst);
 		$query = http_build_query($user);
 		header("Location:user.php" . "?" . $query);
 	} else {
