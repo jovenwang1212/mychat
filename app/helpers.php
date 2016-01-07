@@ -13,11 +13,11 @@ function sendMessage($server, $type, $msg)
 	$app->messages->save($msg->content,$msg->from_name,$type,$msg->to_name,$msg_status); 
 	
 	if($user['fd']){
-		$server->push($to_fd, json_encode([
+		$server->push($user['fd'], json_encode([
 			$type,
 			[
 				'from_name' => $msg->from_name,
-				'content' => $content
+				'content' => $msg->content
 			]
 		]));
 	}

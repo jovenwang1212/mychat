@@ -111,7 +111,7 @@
 				var type = msg[0];
 				var pDom = document.createElement("p");
 				var _msg = msg[1];
-				pDom.innerHTML = '<font color="blue" >' + _msg.from_username + '</font><br/>' + _msg.content;
+				pDom.innerHTML = '<font color="blue" >' + _msg.from_name + '</font><br/>' + _msg.content;
 				chat_historyDom.appendChild(pDom);
 			}
 			ws.onclose = function(e) {
