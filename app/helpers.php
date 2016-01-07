@@ -1,29 +1,26 @@
 <?php
 
-function sendMessage($server, $type, $content, $from_fd, $to_name)
+function sendMessage($server, $type, $msg)
 {
 	global $app;
 
-	$user = $app->users->getByUsername($to_name);
-
+	$user = $app->users->getByUsername($msg->to_name);
+	$msg_status=0;
+	if($user['fd']){
+		$msg_status=1;
+	}
 	// 记录消息
-	$app->messages->create([
-		'fd' => $to_fd,
-		'from_fd' => $from_fd,
-		'content' => $content,
-		'channel' => 'whisper',
-		'time' => time(),
-		'is_readed' => 0
-	]);
+	$app->messages->save($msg->content,$msg->from_name,$type,$msg->to_name,$msg_status); 
 	
-	$server->push($to_fd, json_encode([
-		$type,
-		[
-			'from_fd' => $from_fd,
-			'from_username' => $user['username'],
-			'content' => $content
-		]
-	]));
+	if($user['fd']){
+		$server->push($to_fd, json_encode([
+			$type,
+			[
+				'from_name' => $msg->from_name,
+				'content' => $content
+			]
+		]));
+	}
 }
 
 /**

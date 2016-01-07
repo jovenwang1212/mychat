@@ -11,7 +11,7 @@ if(empty($_REQUEST["password"])){
 	$password=md5("sam");
 }
 try {
-	$db = new core\DB;
+	$db = core\DB::getInstance();
 	$sql = "select * from hx_user where u_username='" . $username . "' and u_password='" . $password . "'";
 	$rst = $db -> fetch_first($sql);
 	if ($rst) {

@@ -10,9 +10,10 @@ class DB {
 	public $error;
 	public $sql;
 	public $lastSql;
+	static $_instance; //存储对象
 
 
-	function __construct(){
+	private function __construct(){
 		$config = Config::get('database');
 		$this->pre = $config['db_pre'];
 
@@ -32,9 +33,20 @@ class DB {
 			throw new \Exception('Connect Error (' . mysqli_connect_errno() . ') '. mysqli_connect_error());
 			exit;
 		}
-
 		$this->conn = $mysqli;
 	}
+	
+	 /**
+     * 防止被克隆
+     *
+     */
+    private function __clone(){}
+    public static function getInstance(){
+        if(FALSE == (self::$_instance instanceof self)){
+            self::$_instance = new self();
+        }
+        return self::$_instance;
+    }
 
 	/**
 	 * 执行

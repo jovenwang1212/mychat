@@ -25,10 +25,9 @@ drop table if exists hx_message;
 create table hx_message(
 	m_id int(11) not null auto_increment,
 	content text default "",
-	from_id int(11),
-	to_id int(11),
 	from_name varchar(64) default "",
 	to_name	varchar(64) default "",
+	type varchar(10) default "",
 	add_time int(10) unsigned NOT NULL DEFAULT '0',
 	status tinyint(1) unsigned NOT NULL DEFAULT '0', 
 	primary key(m_id)

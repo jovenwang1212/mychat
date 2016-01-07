@@ -1,63 +1,24 @@
 <?php
 
 namespace App\Repositories;
+use \core\DB;
 
-use \swoole_table;
+class MessageRepository {
+	protected $db;
 
-class MessageRepository
-{
-	protected $table;
-
-	public function __construct()
-	{
-		$this->table = new swoole_table(1024);
-		$this->table->column('fd', swoole_table::TYPE_INT, 4);
-		$this->table->column('from_fd', swoole_table::TYPE_INT, 4);
-		$this->table->column('content', swoole_table::TYPE_STRING, 4000);
-		$this->table->column('channel', swoole_table::TYPE_STRING, 30);
-		$this->table->column('time', swoole_table::TYPE_STRING, 30);
-		$this->table->column('is_readed', swoole_table::TYPE_INT, 4);
-		$this->table->create();
+	public function __construct() {
+		$this -> db =  DB::getInstance();
 	}
 
-	public function create($attributes)
-	{
-		if (is_array($attributes)) {
-			$this->table->set(md5(time()), $attributes);
+	public function save($content,$from_name,$to_name,$type,$status) {
+		try {
+			$time=time();
+			$sql = "insert into hx_message values(null,'$content','$from_name','$to_name','$type',$time,$status)";
+			$rst = $this -> db -> query($sql);
+		} catch(Exception $e) {
+			var_dump($e);
 		}
-	}
-
-	public function where($where)
-	{
-		$messages = [];
-
-		foreach ($this->table as $key => $message) {
-			// match message
-			foreach ($where as $column => $value) {
-				if ($message[$column] != $value) {
-					continue;
-				}
-			}
-
-			$messages[] = $message;
-		}
-
-		return $messages;
-	}
-
-	public function orWhere($where)
-	{
-		$messages = [];
-
-		foreach ($this->table as $key => $message) {
-			// match message
-			foreach ($where as $column => $value) {
-				if ($message[$column] == $value) {
-					$messages[] = $message;
-				}
-			}
-		}
-
-		return $messages;
 	}
 }
+
+

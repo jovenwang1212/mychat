@@ -17,21 +17,20 @@ $app->on('close', function ($context) use ($app) {
 	
 });
 
+$app->on('chat', [
+	function ($context) use ($app) {
+		extract($context);
+		sendMessage($server, 'chat',$message);
+	}
+]);
+
 $app->on('list', [
 	function ($context) use ($app) {
 		extract($context);
-
 		reply($server, $fd, 'list', $app->users->all());
 	}
 ]);
 
-$app->on('chat', [
-	function ($context) use ($app) {
-		extract($context);
-	whisper($server, $message->content, $fd,$message->to_name);
-		
-	}
-]);
 
 $app->on('messages', [
 	function ($context) use ($app) {

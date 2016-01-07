@@ -53,7 +53,7 @@
 					require '../vendor/autoload.php';
 					$name=$_GET["username"];
 					try {
-						$db = new core\DB;
+						$db = core\DB::getInstance();
 						$sql_upper="select * from hx_user where u_id=".$_GET['agent'];
 						$sql_down="select * from hx_user where u_agent=".$_GET['uid'];
 						$friend_upper=$db->fetch_first($sql_upper);
@@ -115,7 +115,7 @@
 				chat_historyDom.appendChild(pDom);
 			}
 			ws.onclose = function(e) {
-				alert("服务器断开.");
+				console.log("服务器断开.");
 			};
 			ws.onerror = function(e) {
 				console.log("onerror");

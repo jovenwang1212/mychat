@@ -6,13 +6,12 @@ class UserRepository {
 	protected $db;
 
 	public function __construct() {
-		$this -> db = new \core\DB;
+		$this -> db =  \core\DB::getInstance();
 	}
 
 	public function login($fd, $username) {
 		try {
 			$sql = "update hx_user set fd=$fd where u_username='$username'";
-			echo $sql;
 			$rst = $this -> db -> query($sql);
 		} catch(Exception $e) {
 			var_dump($e);
@@ -23,6 +22,16 @@ class UserRepository {
 		try {
 			$sql = "update hx_user set fd=0 where fd=$fd";
 			$rst = $this -> db -> query($sql);
+		} catch(Exception $e) {
+			var_dump($e);
+		}
+	}
+
+	public function getByUsername($username) {
+		try {
+			$sql = "select * from hx_user where u_username='$username'";
+			$rst = $this -> db -> fetch_first($sql);
+			return $rst;
 		} catch(Exception $e) {
 			var_dump($e);
 		}
