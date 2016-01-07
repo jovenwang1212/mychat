@@ -13,9 +13,12 @@
 				list-style: none;
 			}
 			
-			#friends {
-				width: 50px;
-				overflow-y: auto;
+			#friends li {
+				line-height: 30px;
+			}
+			
+			#friends li.selected {
+				background-color: rgb(228, 237, 244);
 			}
 			
 			#online_users {
@@ -48,6 +51,7 @@
 			<ul id="friends">
 				<?php
 					require '../vendor/autoload.php';
+					$name=$_GET["username"];
 					try {
 						$db = new core\DB;
 						$sql_upper="select * from hx_user where u_id=".$_GET['agent'];
@@ -59,7 +63,7 @@
 						}
 						$friends=array_reverse($friends);
 						foreach($friends as $friend){
-							echo "<li><a href='#'>".$friend['u_username']."</a></li>";
+							echo "<li><a>".$friend['u_username']."</a></li>";
 						}
 					} catch(Exception $e) {
 						var_dump($e);
@@ -81,51 +85,33 @@
 			<a href="#">与客服交谈</a>
 		</div>
 		<script>
-			var name = Date.now();
+			var name = getParameterByName("username");
 			var ws = {};
-			var friendsDom = document.getElementById("friendsId");
 			var msg_contentDom = document.getElementById("msg_content");
 			var chat_historyDom = document.getElementById("chat_history");
-			//var roomDom = document.getElementById("room");
-			//var msg_contentDom = document.getElementById("msg_content");
+			$("#friends li").on("click", function() {
+				var $self = $(this);
+				$self.siblings().removeClass("selected");
+				$self.addClass("selected");
+			});
+			$("#friends li:first").trigger("click");
 			ws = new WebSocket("ws://localhost:9501");
 			ws.onopen = function(e) {
 				console.log("websocket open");
-				var msg = [
-					'login', {
-						'username': name,
-						'password': name
-					}
-				];
-				ws.send(JSON.stringify(msg));
 			}
 			ws.onmessage = function(e) {
 				console.log(e.data);
 				var msg = JSON.parse(e.data);
 				var type = msg[0];
-				if (type == "login") {
-					var friends = msg[1].friends;
-					console.log(friends);
-					var fragment = document.createDocumentFragment();
-					for (var i = 0; i < friends.length; i++) {
-						var friend = friends[i];
-						var liDom = document.createElement("li");
-						liDom.innerHTML = friend.username;
-						fragment.appendChild(liDom);
-					}
-					friendsDom.appendChild(fragment);
-				} else if (type == "chat") {
-					var pDom = document.createElement("p");
-					var _msg = msg[1];
-					pDom.innerHTML = '<font color="blue" >' + _msg.from_username + '</font><br/>' + _msg.content;
-					chat_historyDom.appendChild(pDom);
-				}
+				var pDom = document.createElement("p");
+				var _msg = msg[1];
+				pDom.innerHTML = '<font color="blue" >' + _msg.from_username + '</font><br/>' + _msg.content;
+				chat_historyDom.appendChild(pDom);
 			}
 			ws.onclose = function(e) {
-				console.log("您已退出聊天室");
+				console.log("exit");
 			};
 			ws.onerror = function(e) {
-				console.log("异常:" + e.data);
 				console.log("onerror");
 			};
 			document.onkeydown = function(e) {
@@ -143,9 +129,9 @@
 				}
 				var msg = [
 					'chat', {
-						'from': name,
+						'from_name': name,
 						'content': content,
-						'to_name': 0
+						'to_name': $("#friends li.selected a").text()
 					}
 				];
 				ws.send(JSON.stringify(msg));
@@ -155,6 +141,13 @@
 				pDom.innerHTML = '<font color="blue" >' + name + '</font><br/>' + content;
 				chat_historyDom.appendChild(pDom);
 				return false;
+			}
+
+			function getParameterByName(name) {
+				name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+				var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+					results = regex.exec(location.search);
+				return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
 			}
 		</script>
 	</body>
