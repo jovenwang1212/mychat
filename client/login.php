@@ -20,7 +20,12 @@ try {
 		$_SESSION['user']=$user;
 		
 		$query = http_build_query($user);
-		header("Location:user.php" . "?" . $query);
+		if($rst['u_type']==1){
+			header("Location:user.php" . "?" . $query);
+		}else{
+			header("Location:service.php" . "?" . $query);
+		}
+		
 	} else {
 		echo "<font color='red'>用户名密码不正确</font><p><a href='index.html'>返回登录页面</a></p>";
 	}
