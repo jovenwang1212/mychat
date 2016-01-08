@@ -40,29 +40,6 @@ class MessageRepository {
 		}
 	}
 	
-	public function selectCurrWaiters() {
-		try {
-			$sql="select (count(*)-1) as count from hx_message where type='service' and read_time=0";
-			$rst = $this -> db -> fetch_first($sql);
-			return $rst['count'];
-		} catch(Exception $e) {
-			var_dump($e);
-			return "";
-		}
-	}
-	
-	public function orSave($content,$from_name,$to_name,$type,$read_time) {
-		try {
-			$sql="select count(*) as count from hx_message where type='$type' and read_time=0 and from_name='$from_name'";
-			$rst = $this -> db -> fetch_first($sql);
-			if(empty($rst['count'])){
-				$this->save($content, $from_name, $to_name, $type, $read_time);
-			}
-		} catch(Exception $e) {
-			var_dump($e);
-		}
-	}
-	
 }
 
 

@@ -54,21 +54,17 @@
 					$name=$_GET["username"];
 					try {
 						$db = core\DB::getInstance();
-						$sql_upper="select * from hx_user where u_type=1 and u_id=".$_GET['agent'];
-						$sql_down="select * from hx_user where u_type=1 and u_agent=".$_GET['uid'];
-						$friend_upper=$db->fetch_first($sql_upper);
-						$friends=$db->fetch_all($sql_down);
-						if($friend_upper){
-							$friends[]=$friend_upper;
-						}
-						$friends=array_reverse($friends);
-						foreach($friends as $friend){
-							echo "<li><a>".$friend['u_username']."</a></li>";
+						$sql="select from_name from hx_service where s_status=1 and to_name='".$_GET['username']."'";
+						$receiveUserNames=$db->fetch_all($sql);
+						
+						foreach($receiveUserNames as $name){
+							echo "<li><a>".$name."</a></li>";
 						}
 					} catch(Exception $e) {
 						var_dump($e);
 					}
 				?>
+				<li><a>接待新会员</a></li>
 			</ul>
 		</div>
 
@@ -79,6 +75,9 @@
 				<br/>
 				<span>按"Enter"发送消息</span>
 			</div>
+		</div>
+		<div id="userinfo">
+			用户详细信息
 		</div>
 
 		<script>
@@ -143,13 +142,22 @@
 				var $self = $(this);
 				$self.siblings().removeClass("selected");
 				$self.addClass("selected");
-				chat_history.innerHTML="";
-				var msg = [
-					'load_history',{
+				chat_history.innerHTML = "";
+				if($("#friends li.selected a").text()=="接待新会员"){
+					var msg = [
+					'receive', {
+						'username': name,
+					}
+					];
+				}else{
+					var msg = [
+					'load_history', {
 						'from_name': $("#friends li.selected a").text(),
 						'to_name': name
 					}
-				];
+					];
+				}
+				
 				ws.send(JSON.stringify(msg));
 			});
 			
@@ -182,10 +190,6 @@
 					results = regex.exec(location.search);
 				return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
 			}
-			
-			$("#customer_service a").click(function(){
-				//window.open("");
-			});
 			
 		</script>
 	</body>

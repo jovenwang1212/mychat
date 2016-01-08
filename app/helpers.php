@@ -43,6 +43,24 @@ function service($server,$type,$msg){
 	$user = $app->users->getByUsername($msg->username);
 	// 记录消息
 	$app->service->orSave($msg->username,""); 
+	$count=$app->service->selectCurrFrontWaiters($msg->username);
+	
+	if($user['fd']){
+		$server->push($user['fd'], json_encode([
+			$type,
+			[
+				'from_name' => "客服服务",
+				'content' => "当前等待用户".$count.'位'
+			]
+		]));
+	}
+}
+function receive($server,$type,$msg){
+	global $app;
+
+	$user = $app->users->getByUsername($msg->username);
+	// 记录消息
+	$app->service->receive($msg->username); 
 	$count=$app->service->selectCurrWaiters();
 	
 	if($user['fd']){

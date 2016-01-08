@@ -36,4 +36,10 @@ $app->on('service', [
 		service($server,"service",$message);
 	}
 ]);
+$app->on('receive', [
+	function ($context) use ($app) {
+		extract($context);
+		service($server,"receive",$message);
+	}
+]);
 
