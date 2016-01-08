@@ -8,6 +8,7 @@ use core\Config;
 
 $app->bind('users', new App\Repositories\UserRepository);
 $app->bind('messages', new App\Repositories\MessageRepository);
+$app->bind('service', new App\Repositories\Service);
 
 require __DIR__ . '/app/events.php';
 

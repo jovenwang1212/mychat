@@ -36,4 +36,14 @@ create table hx_message(
 	read_time int(10) unsigned NOT NULL DEFAULT '0',
 	primary key(m_id)
 );
+
+drop table if exists hx_service;
+create table hx_service(
+	s_id int(11) not null auto_increment,
+	from_name varchar(64) default "",
+	to_name	varchar(64) default "",
+	add_time int(10) unsigned NOT NULL DEFAULT '0',
+	s_status int(2) unsigned NOT NULL DEFAULT '0',#0尚未接待 1接待中 2接待完成
+	primary key(s_id)
+);
  

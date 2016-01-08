@@ -42,8 +42,8 @@ function service($server,$type,$msg){
 
 	$user = $app->users->getByUsername($msg->username);
 	// 记录消息
-	$app->messages->orSave("",$msg->username,"service",$type,0); 
-	$count=$app->messages->selectCurrWaiters();
+	$app->service->orSave($msg->username,""); 
+	$count=$app->service->selectCurrWaiters();
 	
 	if($user['fd']){
 		$server->push($user['fd'], json_encode([
