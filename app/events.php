@@ -30,25 +30,10 @@ $app->on('load_history', [
 		loadHistory($server,$message);
 	}
 ]);
-
-
-$app->on('list', [
+$app->on('service', [
 	function ($context) use ($app) {
 		extract($context);
-		reply($server, $fd, 'list', $app->users->all());
+		service($server,"service",$message);
 	}
 ]);
 
-
-$app->on('messages', [
-	function ($context) use ($app) {
-		extract($context);
-	
-		reply($server, $fd, 'messages', 
-			$app->messages->orWhere([
-				'fd' => $fd,
-				'from_fd' => $fd
-			])
-		);
-	}
-]);
