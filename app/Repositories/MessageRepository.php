@@ -20,9 +20,9 @@ class MessageRepository {
 		}
 	}
 	
-	private function updateReadTime($read_time) {
+	private function updateReadTime($read_time,$from_name,$to_name) {
 		try {
-			$sql = "update hx_message set read_time=$read_time";
+			$sql = "update hx_message set read_time=$read_time where from_name='$from_name' and to_name='$to_name' and read_time=0";
 			$rst = $this -> db -> query($sql);
 		} catch(Exception $e) {
 			var_dump($e);
@@ -30,10 +30,10 @@ class MessageRepository {
 	}
 	public function getHistoryContent($from_name,$to_name,$login_time) {
 		try {
-			$sql = "select from_name,content from hx_message where ((from_name='$from_name' and to_name='$to_name') or (to_name='$from_name' and from_name='$to_name')) and read_time>=$login_time";
+			$sql = "select from_name,content from hx_message where (((from_name='$from_name' and to_name='$to_name') or (to_name='$from_name' and from_name='$to_name')) and add_time>$login_time) or (from_name='$from_name' and to_name='$to_name' and read_time=0)";
 			echo $sql;
 			$rst = $this -> db -> fetch_all($sql);
-			$this->updateReadTime($login_time);
+			$this->updateReadTime($login_time,$from_name,$to_name);
 			return $rst;
 		} catch(Exception $e) {
 			var_dump($e);

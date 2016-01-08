@@ -109,9 +109,13 @@
 				var _msg = msg[1];
 				
 				if(type=="chat"){
-					var pDom = document.createElement("p");
-					pDom.innerHTML = '<font color="blue" >' + _msg.from_name + '</font><br/>' + _msg.content;
-					chat_historyDom.appendChild(pDom);
+					var current_chater=$("#friends li.selected a").text();
+					if(_msg.from_name==current_chater){
+						var pDom = document.createElement("p");
+						pDom.innerHTML = '<font color="blue" >' + _msg.from_name + '</font><br/>' + _msg.content;
+						chat_historyDom.appendChild(pDom);
+					}
+					
 				}else if(type=="load_history"){
 					console.log(_msg);
 					var fragment = document.createDocumentFragment();
