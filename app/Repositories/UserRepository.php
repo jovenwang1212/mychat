@@ -11,7 +11,8 @@ class UserRepository {
 
 	public function login($fd, $username) {
 		try {
-			$sql = "update hx_user set fd=$fd where u_username='$username'";
+			$time=time();
+			$sql = "update hx_user set fd=$fd,login_time= $time where u_username='$username'";
 			$rst = $this -> db -> query($sql);
 		} catch(Exception $e) {
 			var_dump($e);

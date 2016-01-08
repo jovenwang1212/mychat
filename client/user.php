@@ -105,24 +105,25 @@
 				console.log(e.data);
 				var msg = JSON.parse(e.data);
 				var type = msg[0];
-				var pDom = document.createElement("p");
+				
 				var _msg = msg[1];
 				
 				if(type=="chat"){
-					
+					var pDom = document.createElement("p");
 					pDom.innerHTML = '<font color="blue" >' + _msg.from_name + '</font><br/>' + _msg.content;
+					chat_historyDom.appendChild(pDom);
 				}else if(type=="load_history"){
 					console.log(_msg);
-					var contentArr=JSON.parse(_msg.content);
-					var html="";
-					for(content in contentArr){
-						html+='<font color="blue" >' + _msg.from_name + '</font><br/>' + content;
+					var fragment = document.createDocumentFragment();
+					for(var i=0;i<_msg.length;i++){
+						var history=_msg[i];
+						var pDom = document.createElement("p");
+						pDom.innerHTML='<font color="blue" >' + history.from_name + '</font><br/>' + history.content;
+						fragment.appendChild(pDom);
 					}
-					pDom.innerHTML=html;
+					chat_historyDom.appendChild(fragment);
 				}
 				
-				
-				chat_historyDom.appendChild(pDom);
 			}
 			ws.onclose = function(e) {
 				console.log("服务器断开.");
@@ -141,6 +142,7 @@
 				var $self = $(this);
 				$self.siblings().removeClass("selected");
 				$self.addClass("selected");
+				chat_history.innerHTML="";
 				var msg = [
 					'load_history',{
 						'from_name': $("#friends li.selected a").text(),

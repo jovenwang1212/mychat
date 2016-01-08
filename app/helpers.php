@@ -5,12 +5,12 @@ function sendMessage($server, $type, $msg)
 	global $app;
 
 	$user = $app->users->getByUsername($msg->to_name);
-	$msg_status=0;
+	$read_time=0;
 	if($user['fd']){
-		$msg_status=1;
+		$read_time=time();
 	}
 	// 记录消息
-	$app->messages->save($msg->content,$msg->from_name,$msg->to_name,$type,$msg_status); 
+	$app->messages->save($msg->content,$msg->from_name,$msg->to_name,$type,$read_time); 
 	
 	if($user['fd']){
 		$server->push($user['fd'], json_encode([
@@ -27,16 +27,12 @@ function loadHistory($server,$msg){
 	global $app;
 	$user = $app->users->getByUsername($msg->to_name);
 	// 记录消息
-	$content=$app->messages->getUnReadContent($msg->from_name,$msg->to_name); 
+	$historyContent=$app->messages->getHistoryContent($msg->from_name,$msg->to_name,$user["login_time"]); 
 	
 	
 	if($user['fd']){
 		$server->push($user['fd'], json_encode([
-			"load_history",
-			[
-				'from_name' => $msg->from_name,
-				'content' => $content
-			]
+			"load_history",$historyContent
 		]));
 	}
 }
