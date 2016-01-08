@@ -19,6 +19,26 @@ class MessageRepository {
 			var_dump($e);
 		}
 	}
+	
+	private function updateStatus($status) {
+		try {
+			$sql = "update hx_message set status=$status";
+			$rst = $this -> db -> query($sql);
+		} catch(Exception $e) {
+			var_dump($e);
+		}
+	}
+	public function getUnReadContent($from_name,$to_name) {
+		try {
+			$sql = "select content from hx_message where from_name='$from_name' and to_name='$to_name' and status=0";
+			$rst = $this -> db -> fetch_all($sql);
+			$this->updateStatus(1);
+			return json_encode($rst);
+		} catch(Exception $e) {
+			var_dump($e);
+			return "";
+		}
+	}
 }
 
 

@@ -10,7 +10,7 @@ function sendMessage($server, $type, $msg)
 		$msg_status=1;
 	}
 	// 记录消息
-	$app->messages->save($msg->content,$msg->from_name,$type,$msg->to_name,$msg_status); 
+	$app->messages->save($msg->content,$msg->from_name,$msg->to_name,$type,$msg_status); 
 	
 	if($user['fd']){
 		$server->push($user['fd'], json_encode([
@@ -18,6 +18,24 @@ function sendMessage($server, $type, $msg)
 			[
 				'from_name' => $msg->from_name,
 				'content' => $msg->content
+			]
+		]));
+	}
+}
+
+function loadHistory($server,$msg){
+	global $app;
+	$user = $app->users->getByUsername($msg->to_name);
+	// 记录消息
+	$content=$app->messages->getUnReadContent($msg->from_name,$msg->to_name); 
+	
+	
+	if($user['fd']){
+		$server->push($user['fd'], json_encode([
+			"load_history",
+			[
+				'from_name' => $msg->from_name,
+				'content' => $content
 			]
 		]));
 	}

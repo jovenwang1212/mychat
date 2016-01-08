@@ -24,6 +24,14 @@ $app->on('chat', [
 	}
 ]);
 
+$app->on('load_history', [
+	function ($context) use ($app) {
+		extract($context);
+		loadHistory($server,$message);
+	}
+]);
+
+
 $app->on('list', [
 	function ($context) use ($app) {
 		extract($context);

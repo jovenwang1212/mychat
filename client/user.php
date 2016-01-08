@@ -89,12 +89,7 @@
 			var ws = {};
 			var msg_contentDom = document.getElementById("msg_content");
 			var chat_historyDom = document.getElementById("chat_history");
-			$("#friends li").on("click", function() {
-				var $self = $(this);
-				$self.siblings().removeClass("selected");
-				$self.addClass("selected");
-			});
-			$("#friends li:first").trigger("click");
+			
 			ws = new WebSocket("ws://localhost:9501");
 			ws.onopen = function(e) {
 				console.log("websocket open");
@@ -104,6 +99,7 @@
 					}
 				];
 				ws.send(JSON.stringify(msg));
+				$("#friends li:first").trigger("click");
 			}
 			ws.onmessage = function(e) {
 				console.log(e.data);
@@ -111,7 +107,21 @@
 				var type = msg[0];
 				var pDom = document.createElement("p");
 				var _msg = msg[1];
-				pDom.innerHTML = '<font color="blue" >' + _msg.from_name + '</font><br/>' + _msg.content;
+				
+				if(type=="chat"){
+					
+					pDom.innerHTML = '<font color="blue" >' + _msg.from_name + '</font><br/>' + _msg.content;
+				}else if(type=="load_history"){
+					console.log(_msg);
+					var contentArr=JSON.parse(_msg.content);
+					var html="";
+					for(content in contentArr){
+						html+='<font color="blue" >' + _msg.from_name + '</font><br/>' + content;
+					}
+					pDom.innerHTML=html;
+				}
+				
+				
 				chat_historyDom.appendChild(pDom);
 			}
 			ws.onclose = function(e) {
@@ -126,6 +136,20 @@
 					sendMsg();
 				}
 			}
+			
+			$("#friends li").on("click", function() {
+				var $self = $(this);
+				$self.siblings().removeClass("selected");
+				$self.addClass("selected");
+				var msg = [
+					'load_history',{
+						'from_name': $("#friends li.selected a").text(),
+						'to_name': name
+					}
+				];
+				ws.send(JSON.stringify(msg));
+			});
+			
 
 			function sendMsg() {
 				var content = msg_contentDom.value;
@@ -155,6 +179,8 @@
 					results = regex.exec(location.search);
 				return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
 			}
+			
+			
 		</script>
 	</body>
 
