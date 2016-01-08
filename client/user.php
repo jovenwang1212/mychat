@@ -54,8 +54,8 @@
 					$name=$_GET["username"];
 					try {
 						$db = core\DB::getInstance();
-						$sql_upper="select * from hx_user where u_id=".$_GET['agent'];
-						$sql_down="select * from hx_user where u_agent=".$_GET['uid'];
+						$sql_upper="select * from hx_user where u_type=1 and u_id=".$_GET['agent'];
+						$sql_down="select * from hx_user where u_type=1 and u_agent=".$_GET['uid'];
 						$friend_upper=$db->fetch_first($sql_upper);
 						$friends=$db->fetch_all($sql_down);
 						if($friend_upper){
@@ -186,6 +186,9 @@
 				return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
 			}
 			
+			$("#customer_service a").click(function(){
+				//window.open("");
+			});
 			
 		</script>
 	</body>

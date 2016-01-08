@@ -21,6 +21,9 @@ insert into hx_user values(4,1,'peter','202cb962ac59075b964b07152d234b70',2,0,0)
 insert into hx_user values(5,1,'alex','202cb962ac59075b964b07152d234b70',2,0,0);
 insert into hx_user values(6,1,'tony','202cb962ac59075b964b07152d234b70',2,0,0);
 insert into hx_user values(7,1,'jack','202cb962ac59075b964b07152d234b70',2,0,0);
+insert into hx_user values(8,2,'service1','202cb962ac59075b964b07152d234b70',0,0,0);
+insert into hx_user values(9,2,'service2','202cb962ac59075b964b07152d234b70',0,0,0);
+insert into hx_user values(10,2,'service3','202cb962ac59075b964b07152d234b70',0,0,0);
 
 drop table if exists hx_message;
 create table hx_message(
