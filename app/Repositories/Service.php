@@ -33,7 +33,7 @@ class Service {
 
 	public function orSave($from_name, $to_name) {
 		try {
-			$sql = "select count(*) as count from hx_service where s_status=0 and from_name='$from_name' and to_name='$to_name'";
+			$sql = "select count(*) as count from hx_service where s_status<>2 and from_name='$from_name' and to_name='$to_name'";
 			$rst = $this -> db -> fetch_first($sql);
 			if (empty($rst['count'])) {
 				$time = time();
