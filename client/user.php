@@ -42,8 +42,7 @@ opcache_reset();
 }</style>
 	</head>
 	<body>
-		<h1>
-			用户XXX
+		<h1 id="currUser">
 		</h1>
 		<div id="online_users">
 			<h2>
@@ -55,8 +54,8 @@ opcache_reset();
 				$name = $_GET["username"];
 				try {
 					$db = core\DB::getInstance();
-					$sql_upper = "select * from hx_user where u_type=1 and u_id=" . $_GET['agent'];
-					$sql_down = "select * from hx_user where u_type=1 and u_agent=" . $_GET['uid'];
+					$sql_upper = "select u_username from hx_user where u_type=1 and u_id=" . $_GET['agent'];
+					$sql_down = "select u_username from hx_user where u_type=1 and u_agent=" . $_GET['uid'];
 					$friend_upper = $db -> fetch_first($sql_upper);
 					$friends = $db -> fetch_all($sql_down);
 					if ($friend_upper) {
@@ -64,13 +63,14 @@ opcache_reset();
 					}
 					$friends = array_reverse($friends);
 					foreach ($friends as $friend) {
-						echo "<li><a>" . $friend['u_username'] . "</a></li>";
+						$username=$friend["u_username"];
+						echo "<li><a data-username='".$username."'>" . $username . "</a></li>";
 					}
 				} catch(Exception $e) {
 					var_dump($e);
 				}
 				?>
-				<li><a>客服服务</a></li>
+				<li><a data-username="客服服务">客服服务</a></li>
 			</ul>
 		</div>
 		<div id="chat">
@@ -84,6 +84,8 @@ opcache_reset();
 		</div>
 <script>
 var name = getParameterByName("username");
+document.getElementById("currUser").textContent="用户"+name;
+
 var ws = {};
 var msg_contentDom = document.getElementById("msg_content");
 var chat_historyDom = document.getElementById("chat_history");
@@ -104,7 +106,7 @@ ws.onmessage = function(e) {
 	var type = msg[0];
 	var _msg = msg[1];
 	if (type == "chat"||type=="service") {
-		var current_chater = $("#friends li.selected a").text();
+		var current_chater = $("#friends li.selected a").attr("data-username");
 		if (_msg.from_name == current_chater) {
 			var pDom = document.createElement("p");
 			pDom.innerHTML = '<font color="blue" >' + _msg.from_name + '</font><br/>' + _msg.content;
@@ -120,6 +122,9 @@ ws.onmessage = function(e) {
 			fragment.appendChild(pDom);
 		}
 		chat_historyDom.appendChild(fragment);
+	}else if (type == "receive") {
+		console.log(_msg);
+		$("#friends li:last a").attr("data-username",_msg.from_name);
 	}
 }
 ws.onclose = function(e) {
@@ -139,7 +144,7 @@ $("#friends li").on("click", function() {
 	$self.siblings().removeClass("selected");
 	$self.addClass("selected");
 	chat_history.innerHTML = "";
-	if($("#friends li.selected a").text()=="客服服务"){
+	if($("#friends li.selected a").attr("data-username")=="客服服务"){
 		var msg = [
 		'service', {
 			'username': name,
@@ -148,7 +153,7 @@ $("#friends li").on("click", function() {
 	}else{
 		var msg = [
 		'load_history', {
-			'from_name': $("#friends li.selected a").text(),
+			'from_name': $("#friends li.selected a").attr("data-username"),
 			'to_name': name
 		}
 		];
@@ -167,7 +172,7 @@ function sendMsg() {
 		'chat', {
 			'from_name': name,
 			'content': content,
-			'to_name': $("#friends li.selected a").text()
+			'to_name': $("#friends li.selected a").attr("data-username")
 		}
 	];
 	ws.send(JSON.stringify(msg));

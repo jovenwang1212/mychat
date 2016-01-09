@@ -21,7 +21,7 @@ class WebSocket extends Server
 			if ($frame->opcode == WEBSOCKET_OPCODE_BINARY) {
 				
 			} else {
-				echo "Receive: {$frame->data}\n";
+				echo "{$frame->data}\n";
 
 				list($type, $message) = $this->parseData($frame->data);
 				if (!is_null($message)) {

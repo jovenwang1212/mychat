@@ -58,18 +58,39 @@ function service($server,$type,$msg){
 function receive($server,$type,$msg){
 	global $app;
 
-	$user = $app->users->getByUsername($msg->username);
-	// 记录消息
-	$app->service->receive($msg->username); 
-	$count=$app->service->selectCurrWaiters();
-	
-	if($user['fd']){
-		$server->push($user['fd'], json_encode([
-			$type,
+	$servicer = $app->users->getByUsername($msg->username);
+	$_user=$app->service->receiveUser();
+	if(empty($_user)){
+		$server->push($servicer['fd'], json_encode([
+			"system",
 			[
-				'from_name' => "客服服务",
-				'content' => "当前等待用户".$count.'位'
+				'from_name' =>"系统消息",
+				'content' => "当前没有可接待用户！"
 			]
 		]));
+		return;
 	}
+	
+	//更新service表状态
+	$app->service->updateStatusName($msg->username,$_user["s_id"]); 
+	$content="您好,我是客服".$servicer['u_username']."请问有什么可以帮到您?";
+	// 记录消息
+	$app->messages->save($content,$servicer['u_username'],$_user['u_username'],"service",0); 
+	//发送给会员消息
+		$server->push($_user['fd'], json_encode([
+			$type,
+			[
+				'from_name' => $servicer['u_username'],
+				'content' => $content
+			]
+		]));
+	//给客服发送消息
+		$server->push($servicer['fd'], json_encode([
+			$type,
+			[
+				'to_name' => $_user['u_username'],
+				'from_name' => $servicer['u_username'],
+				'content' => $content
+			]
+		]));
 }

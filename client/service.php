@@ -49,6 +49,7 @@
 		<div id="online_users">
 			<h2>当前接待用户</h2>
 			<ul id="friends">
+				<li><a>接待新会员</a></li>
 				<?php
 					require '../vendor/autoload.php';
 					$name=$_GET["username"];
@@ -57,14 +58,14 @@
 						$sql="select from_name from hx_service where s_status=1 and to_name='".$_GET['username']."'";
 						$receiveUserNames=$db->fetch_all($sql);
 						
-						foreach($receiveUserNames as $name){
+						foreach($receiveUserNames as $receiveUser){
+							$name=$receiveUser["from_name"];
 							echo "<li><a>".$name."</a></li>";
 						}
 					} catch(Exception $e) {
 						var_dump($e);
 					}
 				?>
-				<li><a>接待新会员</a></li>
 			</ul>
 		</div>
 
@@ -95,7 +96,7 @@
 					}
 				];
 				ws.send(JSON.stringify(msg));
-				$("#friends li:first").trigger("click");
+				//$("#friends li:first").trigger("click");
 			}
 			ws.onmessage = function(e) {
 				console.log(e.data);
@@ -122,6 +123,20 @@
 						fragment.appendChild(pDom);
 					}
 					chat_historyDom.appendChild(fragment);
+				}else if(type=="receive"){
+					var liDom = document.createElement("li");
+					liDom.innerHTML = "<a>"+_msg['to_name']+"</a>";
+					document.getElementById("friends").appendChild(liDom);
+					$(liDom).siblings().removeClass("selected");
+					$(liDom).addClass("selected");
+					chat_history.innerHTML = "";
+					var pDom = document.createElement("p");
+					pDom.innerHTML = '<font color="blue" >' + _msg.from_name + '</font><br/>' + _msg.content;
+					chat_historyDom.appendChild(pDom);
+				}else if(type=="system"){
+					var pDom = document.createElement("p");
+					pDom.innerHTML = '<font color="blue" >' + _msg.from_name + '</font><br/>' + _msg.content;
+					chat_historyDom.appendChild(pDom);
 				}
 				
 			}
