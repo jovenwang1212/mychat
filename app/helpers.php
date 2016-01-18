@@ -2,6 +2,7 @@
 
 function sendMessage($server, $type, $msg)
 {
+	antixss($msg);
 	global $app;
 
 	$user = $app->users->getByUsername($msg->to_name);
@@ -24,6 +25,7 @@ function sendMessage($server, $type, $msg)
 }
 
 function loadHistory($server,$msg){
+	antixss($msg);
 	global $app;
 	$user = $app->users->getByUsername($msg->to_name);
 	// 记录消息
@@ -38,6 +40,7 @@ function loadHistory($server,$msg){
 }
 
 function service($server,$type,$msg){
+	antixss($msg);
 	global $app;
 
 	$user = $app->users->getByUsername($msg->username);
@@ -56,6 +59,7 @@ function service($server,$type,$msg){
 	}
 }
 function receive($server,$type,$msg){
+	antixss($msg);
 	global $app;
 
 	$servicer = $app->users->getByUsername($msg->username);
@@ -93,4 +97,17 @@ function receive($server,$type,$msg){
 				'content' => $content
 			]
 		]));
+}
+
+
+function antixss($message) {		//'/([\x00-\x08,\x0b-\x0c,\x0e-\x19])/,'/meta/'','/xml/','/base/',
+	$ra=Array('/script/','/javascript/','/vbscript/','/expression/','/applet/','/blink/','/link/','/style/','/embed/','/object/','/frame/','/layer/','/bgsound/','/onload/','/onunload/','/onchange/','/onsubmit/','/onreset/','/onselect/','/onblur/','/onfocus/','/onabort/','/onkeydown/','/onkeypress/','/onkeyup/','/onclick/','/ondblclick/','/onmousedown/','/onmousemove/','/onmouseout/','/onmouseover/','/onmouseup/','/onunload/');
+	$value=$message;
+	if (!is_numeric($value)){
+		if (!get_magic_quotes_gpc()) {
+			$value=@addslashes($value);
+		}
+		$value = preg_replace($ra,'',$value);
+		$message =@htmlspecialchars(strip_tags($value),ENT_NOQUOTES);
+	}
 }
