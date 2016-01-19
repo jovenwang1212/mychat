@@ -38,15 +38,19 @@ function loadHistory($server,$msg){
 		]));
 	}
 }
-
+/*
+ * 请求客服
+ * 把请求客服的会员from_name放入到redis队列queue_service_req中(如果是新的请求会员的话)
+ * 返回队列等待的人数
+ */
 function service($server,$type,$msg){
 	antixss($msg);
 	global $app;
 
 	$user = $app->users->getByUsername($msg->username);
-	// 记录消息
-	$app->service->orSave($msg->username,""); 
-	$count=$app->service->selectCurrFrontWaiters($msg->username);
+
+	$app->service->rPush($msg->username); 
+	$count=$app->service->rLen();
 	
 	if($user['fd']){
 		$server->push($user['fd'], json_encode([
@@ -58,13 +62,20 @@ function service($server,$type,$msg){
 		]));
 	}
 }
+/*
+ * 接待会员
+ * 如果队列没有有用户，提示，没有可接待的用户
+ * 如果队列有用户save一条service记录，保存相应的消息
+ */
+
 function receive($server,$type,$msg){
 	antixss($msg);
 	global $app;
 
 	$servicer = $app->users->getByUsername($msg->username);
-	$_user=$app->service->receiveUser();
-	if(empty($_user)){
+	$from_name=$app->service->migrate();
+	
+	if(empty($from_name)){
 		$server->push($servicer['fd'], json_encode([
 			"system",
 			[
@@ -74,14 +85,13 @@ function receive($server,$type,$msg){
 		]));
 		return;
 	}
-	
-	//更新service表状态
-	$app->service->updateStatusName($msg->username,$_user["s_id"]); 
+	$app->service->save($from_name,$msg->username);
+	$from_user = $app->users->getByUsername($from_name);
 	$content="您好,我是客服".$servicer['u_username']."请问有什么可以帮到您?";
 	// 记录消息
-	$app->messages->save($content,$servicer['u_username'],$_user['u_username'],"service",0); 
+	$app->messages->save($content,$servicer['u_username'],$from_user['u_username'],"service",0); 
 	//发送给会员消息
-		$server->push($_user['fd'], json_encode([
+		$server->push($from_user['fd'], json_encode([
 			$type,
 			[
 				'from_name' => $servicer['u_username'],
@@ -92,7 +102,7 @@ function receive($server,$type,$msg){
 		$server->push($servicer['fd'], json_encode([
 			$type,
 			[
-				'to_name' => $_user['u_username'],
+				'to_name' => $from_user['u_username'],
 				'from_name' => $servicer['u_username'],
 				'content' => $content
 			]

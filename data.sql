@@ -43,7 +43,6 @@ create table hx_service(
 	from_name varchar(64) default "",
 	to_name	varchar(64) default "",
 	add_time int(10) unsigned NOT NULL DEFAULT '0',
-	s_status int(2) unsigned NOT NULL DEFAULT '0',#0尚未接待 1接待中 2接待完成
+	comment text DEFAULT '',#0尚未接待 1接待中 2接待完成
 	primary key(s_id)
 );
- 

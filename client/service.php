@@ -55,7 +55,7 @@
 					$name=$_GET["username"];
 					try {
 						$db = core\DB::getInstance();
-						$sql="select from_name from hx_service where s_status=1 and to_name='".$_GET['username']."'";
+						$sql="select from_name from hx_service where to_name='".$_GET['username']."'";
 						$receiveUserNames=$db->fetch_all($sql);
 						
 						foreach($receiveUserNames as $receiveUser){
