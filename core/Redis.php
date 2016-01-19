@@ -21,20 +21,13 @@ class Redis {
 	public function pop($queue){
 		return $this->redis->lPop($queue);
 	}
-	
-	public function len($queue){
-		return $this->redis->lSize($queue);
-	}
 	 
 	 /*
 	 * 判断队列中有没有某无素
 	 */
-	public function contains($queue,$value){
+	public function index($queue,$value){
 		$arr=$this->_list($queue);
-		if(in_array($value,$arr)){
-			return true;
-		}
-		return false;
+		return array_search($value,$arr);
 	}
 	/*
 	 *拿到队列所的有无素

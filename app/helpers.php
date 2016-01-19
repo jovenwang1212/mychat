@@ -50,7 +50,7 @@ function service($server,$type,$msg){
 	$user = $app->users->getByUsername($msg->username);
 
 	$app->service->rPush($msg->username); 
-	$count=$app->service->rLen();
+	$count=$app->service->index($msg->username);
 	
 	if($user['fd']){
 		$server->push($user['fd'], json_encode([

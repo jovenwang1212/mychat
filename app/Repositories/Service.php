@@ -19,8 +19,8 @@ class Service {
 	 * 如果 请求队列和接待队列里面都没有，就新增
 	 */
 	public function rPush($from_name){
-		if((!$this->redis->contains(self::$qsr,$from_name))&&
-			(!$this->redis->contains(self::$qsi,$from_name))){
+		if($this->redis->index(self::$qsr,$from_name)===false&&
+			$this->redis->index(self::$qsi,$from_name)===false){
 				$this->redis->push(self::$qsr,$from_name);
 			}
 	}
@@ -32,9 +32,11 @@ class Service {
 		$this->redis->push(self::$qsi,$from_name);
 		return $from_name;
 	}
-	
-	public function rLen(){
-		return $this->redis->len(self::$qsr);
+	/*
+	 * 当前会员排在第几位
+	 */
+	public function index($from_name){
+		return $this->redis->index(self::$qsr,$from_name);
 	}
 	
 	public function save($from_name, $to_name) {
