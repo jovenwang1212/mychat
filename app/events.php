@@ -12,9 +12,7 @@ $app->on('login', function ($context) use ($app) {
 
 $app->on('close', function ($context) use ($app) {
 	extract($context);
-
-	$user = $app->users->logout($fd);
-	
+	logout($server,$fd);
 });
 
 $app->on('chat', [

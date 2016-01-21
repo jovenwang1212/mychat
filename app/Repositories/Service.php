@@ -48,4 +48,19 @@ class Service {
 			var_dump($e);
 		}
 	}
+	
+	public function logout($from_name){
+		$this->redis->rem(self::$qsi,$from_name);
+	}
+	
+	public function getServiceFd($from_name){
+		try {
+			$sql = "select fd from hx_user as u,(select to_name from hx_service where from_name='$from_name' order by add_time desc) as s where u.u_username=s.to_name";
+			$rst = $this -> db -> fetch_first($sql);
+			$fd=$rst['fd'];
+			return $fd;
+		} catch(Exception $e) {
+			var_dump($e);
+		}
+	}
 }

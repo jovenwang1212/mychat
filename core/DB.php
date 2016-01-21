@@ -5,7 +5,7 @@ use core\Config;
 
 class DB {
 	public $pre;
-	public $conn;
+	private $conn;
 	public $errno;
 	public $error;
 	public $sql;

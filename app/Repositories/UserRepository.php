@@ -37,5 +37,15 @@ class UserRepository {
 			var_dump($e);
 		}
 	}
+	
+	public function getByFd($fd) {
+		try {
+			$sql = "select * from hx_user where fd=$fd";
+			$rst = $this -> db -> fetch_first($sql);
+			return $rst;
+		} catch(Exception $e) {
+			var_dump($e);
+		}
+	}
 
 }

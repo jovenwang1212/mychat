@@ -1,4 +1,29 @@
 <?php
+/*
+ * 用户退出
+ * 2.提示客服，用户退出
+ * 3.从Redis队列中删除
+ *  * 1.更新fd为0
+ * */
+function logout($server,$fd){
+	global $app;
+	
+	$user = $app->users->getByFd($fd);
+	$from_name=$user['u_username'];
+	$service_fd = $app->service->getServiceFd($from_name);
+	
+	echo $service_fd;
+	$server->push($service_fd, json_encode([
+		"system",
+		[
+			'from_name' =>"系统消息",
+			'content' => $from_name."已经退出登陆"
+		]
+	]));
+	$app->service->logout($from_name);
+	$app->users->logout($fd);
+	return;
+}
 
 function sendMessage($server, $type, $msg)
 {
@@ -108,6 +133,7 @@ function receive($server,$type,$msg){
 			]
 		]));
 }
+
 
 
 function antixss($message) {		//'/([\x00-\x08,\x0b-\x0c,\x0e-\x19])/,'/meta/'','/xml/','/base/',

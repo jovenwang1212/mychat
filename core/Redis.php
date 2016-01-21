@@ -35,4 +35,11 @@ class Redis {
 	private function _list($queue){
 		return $this->redis->lRange($queue,0,-1);
 	}
+	
+	/*
+	 * 删除某个元素
+	 */
+	 public function rem($queue,$from_name){
+	 	$this->redis->lRem($queue,$from_name,1);
+	 }
 }
