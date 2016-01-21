@@ -7,7 +7,9 @@
 	<head>
 		<meta charset="utf-8">
 		<title></title>
-		<script type="text/javascript" src="jquery-1.9.1.js"></script>
+		<script type="text/javascript" src="js/jquery.min.1.10.2.js" ></script>
+		<script type="text/javascript" src="js/jquery.json.js" ></script>
+		<script type="text/javascript" src="js/websocket.js" ></script>
 		<style>
 			li {
 				list-style: none;

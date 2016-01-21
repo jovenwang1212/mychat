@@ -7,8 +7,11 @@ opcache_reset();
 		<meta charset="utf-8">
 		<title>
 		</title>
-		<script type="text/javascript" src="jquery-1.9.1.js"></script>
-		<style>li {
+		<script type="text/javascript" src="js/jquery.min.1.10.2.js" ></script>
+		<script type="text/javascript" src="js/jquery.json.js" ></script>
+		<script type="text/javascript" src="js/websocket.js" ></script>
+		<style>
+li {
 	list-style: none;
 }
 
@@ -63,29 +66,31 @@ opcache_reset();
 					}
 					$friends = array_reverse($friends);
 					foreach ($friends as $friend) {
-						$username=$friend["u_username"];
-						echo "<li><a data-username='".$username."'>" . $username . "</a></li>";
+						$username = $friend["u_username"];
+						echo "<li><a data-username='" . $username . "'>" . $username . "</a></li>";
 					}
 				} catch(Exception $e) {
 					var_dump($e);
 				}
 				?>
-				<li><a data-username="客服服务">客服服务</a></li>
+				<li>
+					<a data-username="客服服务">
+						客服服务
+					</a>
+				</li>
 			</ul>
 		</div>
 		<div id="chat">
 			<div id="chat_history">
 			</div>
 			<div id="chat_send">
-				<textarea cols="63" rows="8" id="msg_content"></textarea>								
+				<textarea cols="63" rows="8" id="msg_content"></textarea>												
 				<br/>
 				<span>按"Enter"发送消息</span>
 			</div>
 		</div>
-<script>
-var name = getParameterByName("username");
-document.getElementById("currUser").textContent="用户"+name;
-
+		<script>var name = getParameterByName("username");
+document.getElementById("currUser").textContent = "用户" + name;
 var ws = {};
 var msg_contentDom = document.getElementById("msg_content");
 var chat_historyDom = document.getElementById("chat_history");
@@ -105,7 +110,7 @@ ws.onmessage = function(e) {
 	var msg = JSON.parse(e.data);
 	var type = msg[0];
 	var _msg = msg[1];
-	if (type == "chat"||type=="service") {
+	if (type == "chat" || type == "service") {
 		var current_chater = $("#friends li.selected a").attr("data-username");
 		if (_msg.from_name == current_chater) {
 			var pDom = document.createElement("p");
@@ -122,9 +127,9 @@ ws.onmessage = function(e) {
 			fragment.appendChild(pDom);
 		}
 		chat_historyDom.appendChild(fragment);
-	}else if (type == "receive") {
+	} else if (type == "receive") {
 		console.log(_msg);
-		$("#friends li:last a").attr("data-username",_msg.from_name);
+		$("#friends li:last a").attr("data-username", _msg.from_name);
 	}
 }
 ws.onclose = function(e) {
@@ -144,21 +149,20 @@ $("#friends li").on("click", function() {
 	$self.siblings().removeClass("selected");
 	$self.addClass("selected");
 	chat_history.innerHTML = "";
-	if($("#friends li.selected a").attr("data-username")=="客服服务"){
+	if ($("#friends li.selected a").attr("data-username") == "客服服务") {
 		var msg = [
-		'service', {
-			'username': name,
-		}
+			'service', {
+				'username': name,
+			}
 		];
-	}else{
+	} else {
 		var msg = [
-		'load_history', {
-			'from_name': $("#friends li.selected a").attr("data-username"),
-			'to_name': name
-		}
+			'load_history', {
+				'from_name': $("#friends li.selected a").attr("data-username"),
+				'to_name': name
+			}
 		];
 	}
-	
 	ws.send(JSON.stringify(msg));
 });
 
@@ -189,7 +193,6 @@ function getParameterByName(name) {
 	var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
 		results = regex.exec(location.search);
 	return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
-}
-</script>
+}</script>
 	</body>
 </html>
