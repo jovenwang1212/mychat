@@ -1,6 +1,6 @@
 ## 聊天室
 
-使用php 7.0 + [swoole 1.7.19]+redis (http://www.swoole.com/)开发的客服系统。
+使用php 7.0 + Swoole + Redis 开发的客服系统。
 
 ###导入数据库,更新数据库配置文件
 	数据库文件是data.sql
