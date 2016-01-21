@@ -14,8 +14,9 @@ create table hx_user(
 	login_time int(10) unsigned NOT NULL DEFAULT '0',
 	primary key(u_id)
 )engine=InnoDB default charset=utf8;
+#密码全部为123
 insert into hx_user values(1,1,'boss','202cb962ac59075b964b07152d234b70',0,0,0);
-insert into hx_user values(2,1,'sam','332532dcfaa1cbf61e2a266bd723612c',1,0,0);
+insert into hx_user values(2,1,'sam','202cb962ac59075b964b07152d234b70',1,0,0);
 insert into hx_user values(3,1,'luke','202cb962ac59075b964b07152d234b70',2,0,0);
 insert into hx_user values(4,1,'peter','202cb962ac59075b964b07152d234b70',2,0,0);
 insert into hx_user values(5,1,'alex','202cb962ac59075b964b07152d234b70',2,0,0);
